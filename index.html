@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .carouselWrapper{
+            width: 400px;
+            height: 300px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: none;
+        }
+        .carouselWrapper .carouselBox{
+            width: 400px;
+            height: 300px;
+            display: flex;
+            position: relative;
+        }
+        .carouselWrapper .carouselBox > img{
+            width: 400px;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            transition: all 0.3s;
+        }
+        .carouselWrapper .carouselBox > img.current{
+            transform: translateX(0);
+            z-index: 2;
+        }
+        .carouselWrapper .carouselBox > img.leave{
+            transform: translateX(-100%);
+        }
+        .carouselWrapper .carouselBox > img.enter{
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="carouselWrapper">
+        <div class="carouselBox">
+            <img src="img/1.png" alt="" width="400" height="300">
+            <img src="img/2.png" alt="" width="400" height="300">
+            <img src="img/3.png" alt="" width="400" height="300">
+            <img src="img/4.png" alt="" width="400" height="300">
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        let n=1,page_size=4;
+        init()
+        setInterval(()=>{
+            makeLeave(n).one('transitionend',function(e){
+                makeEnter($(e.currentTarget))
+            })
+            makeCurrent(n+1)
+            n++
+        },3000)
+        function init(){
+            $(`.carouselBox > img:nth-child(${n})`).addClass('current').siblings().addClass('enter')
+            $('.carouselWrapper').show()
+        }
+        function makeLeave(n){
+            $node=getNode(n)
+            return $node.removeClass('current enter').addClass('leave')
+        }
+        function makeEnter($node){
+            return $node.removeClass('current leave').addClass('enter')
+        }
+        function makeCurrent(n){
+            $node = getNode(n)
+            return $node.removeClass('enter leave').addClass('current')
+        }
+        function getNode(n){
+            return $(`.carouselBox > img:nth-child(${getPage(n)})`)
+        }
+        function getPage(n){
+            let page = n%page_size===0 ? page_size : n%page_size
+            return page
+        }
+        
+    </script>
+</body>
+</html>
